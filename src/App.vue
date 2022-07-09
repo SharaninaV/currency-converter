@@ -1,13 +1,16 @@
 <template>
   <div id="app">
+    <h1>Currency Converter</h1>
+    <CurrencyConverter />
   </div>
 </template>
 
 <script>
-
+import CurrencyConverter from '@/components/CurrencyConverter'
 export default {
   name: 'App',
   components: {
+    CurrencyConverter
   }
 }
 </script>
@@ -15,10 +18,19 @@ export default {
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin: 20% auto;
+  padding: 20px 0 40px 20px;
+  background: white;
+  width: 75%;
+  border-radius: 10px;
+}
+html {
+  background: url("https://swall.teahub.io/photos/small/96-961759_white-and-green-gradient-background.jpg") no-repeat;
+  background-size: cover;
+  height: 100%;
+}
+h1 {
+  color: #017556;
 }
 </style>
