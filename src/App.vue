@@ -1,7 +1,11 @@
 <template>
   <div id="app">
-    <h1>Currency Converter</h1>
-    <CurrencyConverter />
+  <ui-grid>
+    <ui-grid-cell columns="12">
+      <h1 :class="$tt('headline2')">Currency Converter</h1>
+      <CurrencyConverter />
+    </ui-grid-cell>
+  </ui-grid>
   </div>
 </template>
 
@@ -19,10 +23,8 @@ export default {
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   color: #2c3e50;
-  margin: 20% auto;
-  padding: 20px 0 40px 20px;
+  margin: 20% 20px;
   background: white;
-  width: 75%;
   border-radius: 10px;
 }
 html {

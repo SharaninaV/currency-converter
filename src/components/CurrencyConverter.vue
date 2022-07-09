@@ -1,22 +1,38 @@
 <template>
   <div>
-    <h2 class="course">1 {{ this.currencyFrom }} = {{ this.rate }} {{ this.currencyTo }}</h2>
-    <div>
-      <input type="number" v-model="amountFrom" @change="convert()" @input="convert()">
-      <select name="currencyFrom" id="currencyFrom" v-model="currencyFrom" @change="convert()">
-        <option v-for="(item, key) in currencies" :value="item" v-bind:key="key">
-          {{ item }}
-        </option>
-      </select>
-      <button @click="switchCurrencies()">Switch</button>
-      <input type="number" disabled v-model="amountTo">
-        <select name="currencyTo" id="currencyTo" v-model="currencyTo" @change="convert()">
-          <option v-for="(item, key) in currencies" :value="item" v-bind:key="key">
-            {{ item }}
-          </option>
-        </select>
+      <h4 :class="$tt('headline4')">1 {{ this.currencyFrom }} = {{ this.rate }} {{ this.currencyTo }}</h4>
+    <ui-grid position="center">
+      <ui-grid-cell columns="2">
+        <ui-textfield type="number" v-model="amountFrom" @change="convert()" @input="convert()"></ui-textfield>
+      </ui-grid-cell>
+      <ui-grid-cell columns="2">
+        <ui-select
+          name="currencyFrom"
+          id="currencyFrom"
+          v-model="currencyFrom"
+          :options="currencies"
+          @change="convert()"
+        >
+      </ui-select>
+      </ui-grid-cell>
+      <ui-grid-cell columns="2" align="middle">
+        <ui-button icon="swap_horiz" @click="switchCurrencies()">Swap</ui-button>
+      </ui-grid-cell>
+      <ui-grid-cell columns="2">
+        <ui-textfield type="number" disabled v-model="amountTo"></ui-textfield>
+      </ui-grid-cell>
+      <ui-grid-cell columns="2">
+        <ui-select
+          name="currencyTo"
+          id="currencyTo"
+          v-model="currencyTo"
+          :options="currencies"
+          @change="convert()"
+        >
+        </ui-select>
+      </ui-grid-cell>
+    </ui-grid>
     </div>
-  </div>
 </template>
 
 <script>
@@ -29,7 +45,7 @@ export default {
   data () {
     return {
       exchangeRateUSDData: {},
-      currencyFrom: null,
+      currencyFrom: 'EUR',
       currencyTo: 'EUR',
       rate: null,
       amountFrom: 1,
@@ -82,7 +98,7 @@ export default {
 </script>
 
 <style>
-html {
-
+h4 {
+  margin-left: 20px;
 }
 </style>
