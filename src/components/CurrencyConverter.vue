@@ -1,43 +1,56 @@
 <template>
   <div>
-      <h4 :class="$tt('headline4')">1 {{ this.currencyFrom }} = {{ this.rate }} {{ this.currencyTo }}</h4>
-    <ui-grid position="center">
-      <ui-grid-cell columns="2">
-        <ui-textfield type="number" v-model="amountFrom" @change="convert()" @input="convert()"></ui-textfield>
-      </ui-grid-cell>
-      <ui-grid-cell columns="2">
-        <ui-select
-          name="currencyFrom"
-          id="currencyFrom"
-          v-model="currencyFrom"
-          :options="currencies"
-          @change="convert()"
-        >
-      </ui-select>
-      </ui-grid-cell>
-      <ui-grid-cell columns="2" align="middle">
-        <ui-button icon="swap_horiz" @click="switchCurrencies()">Swap</ui-button>
-      </ui-grid-cell>
-      <ui-grid-cell columns="2">
-        <ui-textfield type="number" disabled v-model="amountTo"></ui-textfield>
-      </ui-grid-cell>
-      <ui-grid-cell columns="2">
-        <ui-select
-          name="currencyTo"
-          id="currencyTo"
-          v-model="currencyTo"
-          :options="currencies"
-          @change="convert()"
-        >
-        </ui-select>
-      </ui-grid-cell>
-    </ui-grid>
+      <h4 :class="$tt('headline4')">
+        1 {{ this.currencyFrom }} = {{ this.rate }} {{ this.currencyTo }}
+      </h4>
+      <ui-grid>
+        <ui-grid-cell columns="6">
+          <ui-textfield
+            inputType="number"
+            v-model="amountFrom"
+            @input="handleInputChange()"
+          />
+        </ui-grid-cell>
+        <ui-grid-cell columns="6">
+          <ui-select
+            name="currencyFrom"
+            id="currencyFrom"
+            v-model="currencyFrom"
+            :options="currencies"
+            @selected="convert()"
+          />
+        </ui-grid-cell>
+      </ui-grid>
+      <ui-grid>
+        <ui-grid-cell columns="5"/>
+        <ui-grid-cell align="middle" columns="2">
+          <ui-icon-button
+            class="button"
+            icon="swap_vert"
+            @click="switchCurrencies()"
+          />
+        </ui-grid-cell>
+        <ui-grid-cell columns="5"/>
+      </ui-grid>
+      <ui-grid>
+        <ui-grid-cell columns="6">
+          <ui-textfield disabled v-model="amountTo"/>
+        </ui-grid-cell>
+        <ui-grid-cell columns="6">
+          <ui-select
+            name="currencyTo"
+            id="currencyTo"
+            v-model="currencyTo"
+            :options="currencies"
+            @selected="convert()"
+          />
+        </ui-grid-cell>
+      </ui-grid>
     </div>
 </template>
 
 <script>
-import { rates } from '@/rates-usd'
-import { currencies } from '@/constants'
+import { CURRENCIES } from '@/constants'
 import { countriesCurrencies } from '@/countriesCurrencies'
 
 export default {
@@ -45,28 +58,28 @@ export default {
   data () {
     return {
       exchangeRateUSDData: {},
-      currencyFrom: 'EUR',
+      currencyFrom: null,
       currencyTo: 'EUR',
       rate: null,
-      amountFrom: 1,
-      amountTo: null,
-      rates,
-      currencies,
+      amountFrom: 0,
+      amountTo: 0,
+      currencies: CURRENCIES,
       countriesCurrencies,
       locale: null
     }
   },
   methods: {
     fetchData () {
-      // eslint-disable-next-line no-template-curly-in-string
-      // fetch('https://openexchangerates.org/api/latest.json?app_id=f8fb7690311c4f7c95475f6da420a307')
-      //   .then(response => response.json())
-      //   .then(data => console.log(data))
-      // console.log(rates)
-      console.log(rates)
-      this.exchangeRateUSDData = rates.rates
-      // this.rate = rates.rates[this.currencyTo]
-      // return rates
+      fetch(`https://openexchangerates.org/api/latest.json?app_id=${process.env.VUE_APP_OPEN_EXCHANGE_RATES_APP_ID}`)
+        .then(response => response.json())
+        .then(data => {
+          this.exchangeRateUSDData = data.rates
+          this.rate = (1 / this.exchangeRateUSDData[this.currencyFrom] * this.exchangeRateUSDData[this.currencyTo]).toFixed(4)
+        })
+    },
+    handleInputChange () {
+      this.getAbs()
+      this.convert()
     },
     convert () {
       this.rate = (this.exchangeRateUSDData[this.currencyTo]).toFixed(4)
@@ -76,6 +89,9 @@ export default {
         this.amountTo = (this.amountFrom / this.exchangeRateUSDData[this.currencyFrom] * this.rate).toFixed(2)
         this.rate = (this.rate / this.exchangeRateUSDData[this.currencyFrom]).toFixed(4)
       }
+    },
+    getAbs () {
+      this.amountFrom = !!this.amountFrom && Math.abs(this.amountFrom) >= 0 ? Math.abs(this.amountFrom) : null
     },
     switchCurrencies () {
       [this.currencyFrom, this.currencyTo] = [this.currencyTo, this.currencyFrom]
@@ -92,13 +108,6 @@ export default {
   mounted () {
     this.fetchData()
     this.setCurrencyByLocale()
-    this.convert()
   }
 }
 </script>
-
-<style>
-h4 {
-  margin-left: 20px;
-}
-</style>

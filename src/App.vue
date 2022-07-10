@@ -23,14 +23,16 @@ export default {
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   color: #2c3e50;
-  margin: 20% 20px;
+  margin: 10% auto;
   background: white;
   border-radius: 10px;
+  width: 60%;
 }
 html {
-  background: url("https://swall.teahub.io/photos/small/96-961759_white-and-green-gradient-background.jpg") no-repeat;
+  background: url('https://swall.teahub.io/photos/small/96-961759_white-and-green-gradient-background.jpg') no-repeat;
   background-size: cover;
   height: 100%;
+  text-align: center;
 }
 h1 {
   color: #017556;
